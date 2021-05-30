@@ -1,5 +1,4 @@
 require('dotenv').config({ path: '.env.dev' });
-
 const Web3 = require('web3');
 
 // ganache
@@ -8,9 +7,11 @@ const Web3 = require('web3');
 const testnet = `https://kovan.infura.io/v3/2a98a1e540c64ec8904e8c056e2e5fc2`;
 const web3 = new Web3(new Web3.providers.HttpProvider(testnet));
 
-const myPrivateKey = process.env.METAMASK_PASSWORD;
+// amount of ether to send and to whom
+const toAddress = '0x53CccA398F6CD117e6aa34AB71598b8F172Bf0FF'; // Address of the recipient
+const etherToSend = '0.006';
 
-// console.log(web3.eth);
+const myPrivateKey = process.env.METAMASK_PASSWORD;
 
 const main = async () => {
     // const account = web3.eth.accounts.create();
@@ -19,13 +20,14 @@ const main = async () => {
     // const accounts = await web3.eth.personal.getAccounts();
     // console.log('accounts', accounts);
 
+    // get current account from privkey
     const currentAccount = web3.eth.accounts.privateKeyToAccount(myPrivateKey);
     console.log('currentAccount', currentAccount);
 
+    // check balance
     let balance = await web3.eth.getBalance(currentAccount.address); //Will give value in.
-    // balance = web3.utils.toWei(balance, 'ether');
     balance = Number(web3.utils.fromWei(balance));
-    console.log('balance in ETH: ', balance);
+    console.log('Balance in ETH: ', balance);
 
     try {
         // const unlockResult = await web3.eth.personal.unlockAccount(
@@ -33,8 +35,6 @@ const main = async () => {
         //     myPrivateKey,
         // );
         // console.log('unlockResult', unlockResult);
-        const toAddress = '0x53CccA398F6CD117e6aa34AB71598b8F172Bf0FF'; // Address of the recipient
-        const etherToSend = '0.003';
 
         const signResult = await web3.eth.accounts.signTransaction(
             {
