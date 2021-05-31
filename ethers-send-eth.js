@@ -1,20 +1,22 @@
+require('dotenv').config({ path: '.env.dev' });
+
 const { ethers, utils, BigNumber } = require('ethers');
 
 let provider = ethers.getDefaultProvider('kovan');
-const signer = provider.getSigner();
 
+const myPrivateKey = process.env.METAMASK_PASSWORD;
 const myAddress = '0x008098A525E61F932314216634597815B976853B';
 const receiver = '0x53CccA398F6CD117e6aa34AB71598b8F172Bf0FF';
 
 const main = async () => {
     // console.log('provider', provider);
 
-    const tx = signer.sendTransaction({
-        to: 'ricmoo.firefly.eth',
-        value: ethers.utils.parseEther('1.0'),
-    });
+    const wallet = new ethers.Wallet(myPrivateKey, provider);
 
-    console.log('tx', tx);
+    console.log(wallet);
+
+    const gasPrice = await wallet.getBalance();
+    console.log('gasPrice', gasPrice);
 
     let balance = await provider.getBalance(myAddress);
     balance = ethers.utils.formatEther(balance, 'ether');
