@@ -1,3 +1,13 @@
+# Mimic `multicall` function from Uniswap
+
+```
+create .env from .env.dev and add keys
+npm i
+node multicall.js
+
+open localhost url and click remove or create pool
+```
+
 # Send Ether using Web3
 
 ```
