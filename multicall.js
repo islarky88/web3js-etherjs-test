@@ -105,20 +105,20 @@ app.get('/remove-pool', async (req, res) => {
 
         // add then refundETH next
         func = contract.methods
-            .unwrapWETH9([
+            .unwrapWETH9(
                 '601302710945574558', // amountMinimum
-                '7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638', // recipient
-            ])
+                '0x7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638', // recipient
+            )
             .encodeABI();
         methods.push(func);
 
         // add then refundETH next
         func = contract.methods
-            .sweepToken([
-                '6f40d4a6237c257fff2db00fa0510deeecd303eb', // token
+            .sweepToken(
+                '0x6f40d4a6237c257fff2db00fa0510deeecd303eb', // token
                 '173675812114047852235', // amountMinimum
-                '7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638', // recipient
-            ])
+                '0x7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638', // recipient
+            )
             .encodeABI();
         methods.push(func);
 
