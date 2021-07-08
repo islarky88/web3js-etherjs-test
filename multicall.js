@@ -34,7 +34,7 @@ app.get('/create-pool', async (req, res) => {
     try {
         methods = [];
         // add mint method first
-        params = [
+        func = contract.methods.mint([
             '0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb', // token0 - InstaToken Address
             '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // token1 - WETH9 address
             '123', // fee
@@ -46,8 +46,7 @@ app.get('/create-pool', async (req, res) => {
             '831197723551503890', // amount1Min
             '0x7284a8451d9a0e7Dc62B3a71C0593eA2eC5c5638', // recipient - smart contract address of InstaToken
             '1628718978', // deadline
-        ];
-        func = contract.methods.mint(params).encodeABI();
+        ]).encodeABI();
         methods.push(func);
 
         // add then refundETH next
@@ -103,7 +102,6 @@ app.get('/remove-pool', async (req, res) => {
             .encodeABI();
         methods.push(func);
 
-        // add then refundETH next
         func = contract.methods
             .unwrapWETH9(
                 '601302710945574558', // amountMinimum
@@ -112,7 +110,6 @@ app.get('/remove-pool', async (req, res) => {
             .encodeABI();
         methods.push(func);
 
-        // add then refundETH next
         func = contract.methods
             .sweepToken(
                 '0x6f40d4a6237c257fff2db00fa0510deeecd303eb', // token
