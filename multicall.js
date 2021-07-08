@@ -34,19 +34,21 @@ app.get('/create-pool', async (req, res) => {
     try {
         methods = [];
         // add mint method first
-        func = contract.methods.mint([
-            '0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb', // token0 - InstaToken Address
-            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // token1 - WETH9 address
-            '123', // fee
-            '456', // tickLower
-            '789', // tickUpper
-            '249999999999999999716', // amount0Desired
-            '856568008741777183', // amount1Desired
-            '242154525503193061571', // amount0Min
-            '831197723551503890', // amount1Min
-            '0x7284a8451d9a0e7Dc62B3a71C0593eA2eC5c5638', // recipient - smart contract address of InstaToken
-            '1628718978', // deadline
-        ]).encodeABI();
+        func = contract.methods
+            .mint([
+                '0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb', // token0 - InstaToken Address
+                '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // token1 - WETH9 address
+                '123', // fee
+                '456', // tickLower
+                '789', // tickUpper
+                '249999999999999999716', // amount0Desired
+                '856568008741777183', // amount1Desired
+                '242154525503193061571', // amount0Min
+                '831197723551503890', // amount1Min
+                '0x7284a8451d9a0e7Dc62B3a71C0593eA2eC5c5638', // recipient - smart contract address of InstaToken
+                '1628718978', // deadline
+            ])
+            .encodeABI();
         methods.push(func);
 
         // add then refundETH next
@@ -81,6 +83,7 @@ app.get('/create-pool', async (req, res) => {
 });
 app.get('/remove-pool', async (req, res) => {
     try {
+        methods = [];
         func = contract.methods
             .decreaseLiquidity([
                 '74933', // tokenId
