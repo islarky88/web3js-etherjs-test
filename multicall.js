@@ -3,6 +3,8 @@ const Web3 = require('web3');
 const { UNI_V3_POS } = require('./abi/uniswap.js');
 const { MultiCall } = require('eth-multicall');
 
+// const BigNumber = web3.utils.BN;
+
 // console.log('UNI_V3_POS', UNI_V3_POS);
 
 const fromAddress = '0x008098A525E61F932314216634597815B976853B';
@@ -43,35 +45,47 @@ const main = async () => {
             inputs: [
                 {
                     type: 'address', // token0
-                    name: 'params.token0',
+                    name: 'token0',
                 },
                 {
                     type: 'address', // token1
-                    name: 'params.token1',
+                    name: 'token1',
+                },
+                {
+                    type: 'uint24', // 1
+                    name: 'fee',
+                },
+                {
+                    type: 'int24', // 2
+                    name: 'tickLower',
+                },
+                {
+                    type: 'int24', // 3
+                    name: 'tickUpper',
                 },
                 {
                     type: 'uint256', // amount0Desired
-                    name: 'params.amount0Desired',
+                    name: 'amount0Desired',
                 },
                 {
                     type: 'uint256', // amount1Desired
-                    name: 'params.amount1Desired',
+                    name: 'amount1Desired',
                 },
                 {
                     type: 'uint256', // amount0Min
-                    name: 'params.amount0Min',
+                    name: 'amount0Min',
                 },
                 {
                     type: 'uint256', // amount1Min
-                    name: 'params.amount1Min',
+                    name: 'amount1Min',
                 },
                 {
                     type: 'address', // recipient
-                    name: 'params.recipient',
+                    name: 'recipient',
                 },
                 {
                     type: 'uint256', // deadline
-                    name: 'params.deadline',
+                    name: 'deadline',
                 },
             ],
         };
@@ -79,16 +93,21 @@ const main = async () => {
         const params = [
             '0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb',
             '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0',
+            '0',
+            '0',
             '249999999999999999716',
             '856568008741777183',
             '242154525503193061571',
             '831197723551503890',
             '0x7284a8451d9a0e7Dc62B3a71C0593eA2eC5c5638',
-            '1625653119',
+            '1628718978',
         ];
         const encoded = web3.eth.abi.encodeFunctionCall(mintMethod, params);
 
-        encodedFunctions.push(encoded);
+        const mintEncoded = contract.methods.mint(params).encodeABI();
+
+        encodedFunctions.push(mintEncoded);
 
         const refund = web3.eth.abi.encodeFunctionCall(
             {
@@ -102,22 +121,23 @@ const main = async () => {
 
         console.log('encodedFunctions', encodedFunctions);
         const gasPrice = await web3.eth.getGasPrice();
-        // console.log('gasPrice', gasPrice);
+        console.log('gasPrice', gasPrice);
         // console.log('encoded', encoded);
 
         // address,address,uint24,int24,int24,uint256,uint256,uint256,uint256,address,uint256
+
+        const mint = contract.methods.mint;
+
+        console.log('mint');
 
         //  this is the multicall method from uniswap contract
         const multicall = contract.methods.multicall;
 
         // console.log('multicall encodedFunctions', multicall(encodedFunctions));
 
-        // const test = await multicall(encodedFunctions).send({
-        //     from: fromAddress,
-        // });
-        // console.log('test', test);
+        const encodedABI = multicall(encodedFunctions).encodeABI();
 
-        // console.log('encoded', encoded);
+        console.log('encodedABI', encodedABI);
 
         // // event handling for disconnect wallet
         // window.ethereum.on('disconnect', () => {
@@ -175,23 +195,24 @@ const main = async () => {
         const signResult = await web3.eth.accounts.signTransaction(
             {
                 to: univ3pos,
-                gasPrice: '20000000000',
-                gas: '21000',
-                from: currentAccount.address,
-                value: web3.utils.toWei(etherToSend, 'ether'),
+                gasPrice: '42000000000',
+                gas: '80000',
+                data: encodedABI,
+                // value: web3.utils.toWei(etherToSend, 'ether'),
             },
             myPrivateKey,
         );
 
-        console.log('signResult', signResult);
-        console.log(signResult);
+        // console.log('signResult', signResult);
+        // console.log(signResult);
 
         const sendResult = await web3.eth.sendSignedTransaction(
             signResult.rawTransaction,
         );
         console.log(sendResult);
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
+        // console.log(error.message);
     }
 };
 
