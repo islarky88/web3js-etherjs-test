@@ -17,8 +17,8 @@ const contract = new web3.eth.Contract(UNI_V3_POS, univ3pos);
 const etherToSend = '0.001';
 
 const gasBudgets = {
-    price: '42000000000',
-    limit: '300000',
+    price: '21000000000',
+    limit: '800000',
 };
 
 // original data from https://etherscan.io/tx/0x38765aaea94fc5d2220721319f9af7df509d4d8142727a5127388c31262f54d3
