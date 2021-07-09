@@ -21,6 +21,13 @@ const gasBudgets = {
     limit: '800000',
 };
 
+const initializeParams = [
+    '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - InstaToken Address
+    '0xd0A1E359811322d97991E03f863a0C30C2cF029C', // token1 - WETH9 address
+    '500', // fee
+    '2505413655765166104103837312489',
+];
+
 // original data from https://etherscan.io/tx/0x38765aaea94fc5d2220721319f9af7df509d4d8142727a5127388c31262f54d3
 // fee, tickLower and tickUpper is currently unknown based on TX
 let mintParams = [
@@ -37,16 +44,10 @@ let mintParams = [
     '1625653119', // deadline
 ];
 
-const initializeParams = [
-    '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - InstaToken Address
-    '0xd0A1E359811322d97991E03f863a0C30C2cF029C', // token1 - WETH9 address
-    '500', // fee
-    '2505413655765166104103837312489',
-];
-
 // override for testing
 mintParams = [
-    '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - InstaToken Address
+    // NOTES: CONTRACT_PRIVATE_KEY in .env should be private key of owner of token smart contract address
+    '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - token smart contract address
     '0xd0A1E359811322d97991E03f863a0C30C2cF029C', // token1 - WETH9 address
     '500', // fee
     '69080', // tickLower
