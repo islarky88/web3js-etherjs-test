@@ -16,7 +16,7 @@ const contract = new web3.eth.Contract(UNI_V3_POS, univ3pos);
 
 const gasBudgets = {
     price: '42000000000',
-    limit: '160000',
+    limit: '240000',
 };
 
 // original data from https://etherscan.io/tx/0x38765aaea94fc5d2220721319f9af7df509d4d8142727a5127388c31262f54d3
@@ -24,7 +24,7 @@ const gasBudgets = {
 let mintParams = [
     '0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb', // token0 - InstaToken Address
     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // token1 - WETH9 address
-    '0', // fee
+    '5', // fee
     '0', // tickLower
     '0', // tickUpper
     '249999999999999999716', // amount0Desired
@@ -35,18 +35,24 @@ let mintParams = [
     '1625653119', // deadline
 ];
 
+const initializeParams = [
+    '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - InstaToken Address
+    '0xd0A1E359811322d97991E03f863a0C30C2cF029C', // token1 - WETH9 address
+    '500', // fee
+    '2505413655765166104103837312489',
+];
 
 // override for testing
 mintParams = [
     '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - InstaToken Address
     '0xd0A1E359811322d97991E03f863a0C30C2cF029C', // token1 - WETH9 address
-    '5', // fee
-    '1', // tickLower
-    '200', // tickUpper
-    '249999', // amount0Desired
-    '856568008741777183', // amount1Desired
-    '242154', // amount0Min
-    '1', // amount1Min
+    '500', // fee
+    '0', // tickLower
+    '0', // tickUpper
+    '1813735983388106', // amount0Desired
+    '4999999999999999', // amount1Desired
+    '1803033126007682', // amount0Min
+    '0', // amount1Min
     '0x008098a525e61f932314216634597815b976853b', // recipient - address to receive token
     '1628653119', // deadline
 ];
@@ -54,6 +60,12 @@ mintParams = [
 const main = async () => {
     try {
         methods = [];
+
+        // // add mint method first
+        // func = contract.methods
+        //     .createAndInitializePoolIfNecessary(...initializeParams)
+        //     .encodeABI();
+        // methods.push(func);
 
         // add mint method first
         func = contract.methods.mint(mintParams).encodeABI();
@@ -78,11 +90,11 @@ const main = async () => {
         const sendResult = await web3.eth.sendSignedTransaction(
             signResult.rawTransaction,
         );
-      console.log(sendResult);
-      console.log('SUCCESS')
+        console.log(sendResult);
+        console.log('SUCCESS');
     } catch (error) {
-      console.log(error);
-      console.log('----FAIL----')
+        console.log(error);
+        console.log('----FAIL----');
     }
 };
 
