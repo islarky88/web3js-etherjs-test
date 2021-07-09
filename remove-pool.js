@@ -9,11 +9,41 @@ const provider = `https://kovan.infura.io/v3/2a98a1e540c64ec8904e8c056e2e5fc2`; 
 
 const web3 = new Web3(new Web3.providers.HttpProvider(provider));
 
-const myPrivateKey = process.env.METAMASK_PASSWORD;
+const contractPrivateKey = process.env.CONTRACT_PRIVATE_KEY;
 
 const univ3pos = '0xc36442b4a4522e871399cd717abdd847ab11fe88';
 
 const contract = new web3.eth.Contract(UNI_V3_POS, univ3pos);
+
+const gasBudgets = {
+    price: '42000000000',
+    limit: '80000',
+};
+
+const params = {
+    tokenId: '74933',
+    tokenAddress: '0x6f40d4a6237c257fff2db00fa0510deeecd303eb',
+    recipient: '0x7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638',
+};
+
+const decreaseLiquidityParams = [
+    params.tokenId, // tokenId
+    '178678694622401229790', // liquidity
+    '173668746393071692156', // amount0Min
+    '601275849210309457', // amount1Min
+    '1625655794', // deadline
+];
+
+const collectParams = [
+    params.tokenId, // tokenId
+    '0x0000000000000000000000000000000000000000', // recipient - burn address?
+    '340282366920938463463374607431768211455', // amount0Max
+    '340282366920938463463374607431768211455', // amount1Max
+];
+
+const unwrapEthAmountMinimum = '601302710945574558';
+
+const sweepTokenAmountMinimum = '173675812114047852235';
 
 const main = async () => {
     try {
@@ -23,32 +53,19 @@ const main = async () => {
 
         // decreaseLiquidity
         func = contract.methods
-            .decreaseLiquidity([
-                '74933', // tokenId
-                '178678694622401229790', // liquidity
-                '173668746393071692156', // amount0Min
-                '601275849210309457', // amount1Min
-                '1625655794', // deadline
-            ])
+            .decreaseLiquidity(decreaseLiquidityParams)
             .encodeABI();
         methods.push(func);
 
         //collect
-        func = contract.methods
-            .collect([
-                '74933', // tokenId
-                '0x0000000000000000000000000000000000000000', // recipient
-                '340282366920938463463374607431768211455', // amount0Max
-                '340282366920938463463374607431768211455', // amount1Max
-            ])
-            .encodeABI();
+        func = contract.methods.collect(collectParams).encodeABI();
         methods.push(func);
 
         //unwrapWETH9
         func = contract.methods
             .unwrapWETH9(
-                '601302710945574558', // amountMinimum
-                '0x7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638', // recipient
+                unwrapEthAmountMinimum, // amountMinimum
+                params.recipient, // recipient
             )
             .encodeABI();
         methods.push(func);
@@ -56,9 +73,9 @@ const main = async () => {
         //sweepToken
         func = contract.methods
             .sweepToken(
-                '0x6f40d4a6237c257fff2db00fa0510deeecd303eb', // token
-                '173675812114047852235', // amountMinimum
-                '0x7284a8451d9a0e7dc62b3a71c0593ea2ec5c5638', // recipient
+                params.tokenAddress, // token
+                sweepTokenAmountMinimum, // amountMinimum
+                params.recipient, // recipient
             )
             .encodeABI();
         methods.push(func);
@@ -68,11 +85,11 @@ const main = async () => {
         const signResult = await web3.eth.accounts.signTransaction(
             {
                 to: univ3pos,
-                gasPrice: '42000000000',
-                gas: '80000',
+                gasPrice: gasBudgets.price,
+                gas: gasBudgets.limit,
                 data: inputData,
             },
-            myPrivateKey,
+            contractPrivateKey,
         );
 
         const sendResult = await web3.eth.sendSignedTransaction(

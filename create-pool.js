@@ -8,11 +8,16 @@ const provider = `https://kovan.infura.io/v3/2a98a1e540c64ec8904e8c056e2e5fc2`; 
 // const provider = `https://mainnet.infura.io/v3/2a98a1e540c64ec8904e8c056e2e5fc2`; // mainnet
 const web3 = new Web3(new Web3.providers.HttpProvider(provider));
 
-const myPrivateKey = process.env.METAMASK_PASSWORD;
+const contractPrivateKey = process.env.CONTRACT_PRIVATE_KEY;
 
 const univ3pos = '0xc36442b4a4522e871399cd717abdd847ab11fe88';
 
 const contract = new web3.eth.Contract(UNI_V3_POS, univ3pos);
+
+const gasBudgets = {
+    price: '42000000000',
+    limit: '80000',
+};
 
 const mintParams = [
     '0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb', // token0 - InstaToken Address
@@ -44,11 +49,11 @@ const main = async () => {
         const signResult = await web3.eth.accounts.signTransaction(
             {
                 to: univ3pos,
-                gasPrice: '42000000000',
-                gas: '80000',
+                gasPrice: gasBudgets.price,
+                gas: gasBudgets.limit,
                 data: inputData,
             },
-            myPrivateKey,
+            contractPrivateKey,
         );
 
         const sendResult = await web3.eth.sendSignedTransaction(
