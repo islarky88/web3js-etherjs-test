@@ -17,7 +17,7 @@ const contract = new web3.eth.Contract(UNI_V3_POS, univ3pos);
 
 const gasBudgets = {
     price: '42000000000',
-    limit: '80000',
+    limit: '160000',
 };
 
 const params = {
@@ -95,7 +95,7 @@ const main = async () => {
         const sendResult = await web3.eth.sendSignedTransaction(
             signResult.rawTransaction,
         );
-        res.send(sendResult);
+        console.log(sendResult);
     } catch (error) {
         console.log(error);
     }
