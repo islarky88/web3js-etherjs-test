@@ -14,9 +14,11 @@ const univ3pos = '0xc36442b4a4522e871399cd717abdd847ab11fe88';
 
 const contract = new web3.eth.Contract(UNI_V3_POS, univ3pos);
 
+const etherToSend = '0.001';
+
 const gasBudgets = {
     price: '42000000000',
-    limit: '240000',
+    limit: '300000',
 };
 
 // original data from https://etherscan.io/tx/0x38765aaea94fc5d2220721319f9af7df509d4d8142727a5127388c31262f54d3
@@ -47,14 +49,14 @@ mintParams = [
     '0x6182d4F98a00CB75a9cbC4A30c16706476e622AC', // token0 - InstaToken Address
     '0xd0A1E359811322d97991E03f863a0C30C2cF029C', // token1 - WETH9 address
     '500', // fee
-    '0', // tickLower
-    '0', // tickUpper
-    '1813735983388106', // amount0Desired
-    '4999999999999999', // amount1Desired
-    '1803033126007682', // amount0Min
+    '69080', // tickLower
+    '76010', // tickUpper
+    '23369122532134', // amount0Desired
+    '100000000000000', // amount1Desired
+    '23169755070570', // amount0Min
     '0', // amount1Min
     '0x008098a525e61f932314216634597815b976853b', // recipient - address to receive token
-    '1628653119', // deadline
+    '1625894860', // deadline
 ];
 
 const main = async () => {
@@ -83,6 +85,7 @@ const main = async () => {
                 gasPrice: gasBudgets.price,
                 gas: gasBudgets.limit,
                 data: inputData,
+                value: web3.utils.toWei(etherToSend, 'ether'),
             },
             contractPrivateKey,
         );
